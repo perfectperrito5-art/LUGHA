@@ -74,7 +74,7 @@ export default function Landing() {
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .6, delay: .7 }}
         >
           <div className="hero-stat">
-            <div className="hero-stat-num">2000+</div>
+            <div className="hero-stat-num">2K+</div>
             <div className="hero-stat-label">African languages</div>
             <div className="hero-stat-hint">our continent&apos;s voice</div>
           </div>

@@ -14,11 +14,13 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
       MYSQL_DATABASE: ${DB_NAME:-lugha_db}
+      MYSQL_USER: ${DB_APP_USER:-lugha}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
     volumes:
       - mysql_data:/var/lib/mysql
       - ./lugha_mvp/database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p${DB_PASSWORD}"]
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD || exit 1"]
       interval: 5s
       timeout: 5s
       retries: 30
@@ -37,8 +39,9 @@ services:
     environment:
       DB_HOST: mysql
       DB_PORT: 3306
+      DB_USER: ${DB_APP_USER:-lugha}
       UVICORN_RELOAD: "0"
-      CORS_ORIGINS: http://localhost,http://127.0.0.1
+      CORS_ORIGINS: http://localhost,http://127.0.0.1,http://localhost:5173,http://127.0.0.1:5173
     depends_on:
       mysql:
         condition: service_healthy
@@ -46,8 +49,8 @@ services:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/')"]
       interval: 10s
       timeout: 5s
-      retries: 12
-      start_period: 40s
+      retries: 18
+      start_period: 90s
     networks:
       - lugha
 
