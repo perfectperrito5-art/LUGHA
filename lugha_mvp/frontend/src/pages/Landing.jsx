@@ -56,7 +56,7 @@ export default function Landing() {
           className="hero-sub"
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .6, delay: .3 }}
         >
-          Africa carries <strong>2K+ living languages</strong> — proverbs, songs, names, and worlds
+          Africa carries <strong>2000+ living languages</strong> — proverbs, songs, names, and worlds
           that most AI has never learned. Lugha is where speakers become guardians: teaching machines
           your mother tongue, archiving oral culture, and carrying our linguistic future forward.
         </motion.p>
@@ -74,7 +74,7 @@ export default function Landing() {
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .6, delay: .7 }}
         >
           <div className="hero-stat">
-            <div className="hero-stat-num">2K+</div>
+            <div className="hero-stat-num">2000+</div>
             <div className="hero-stat-label">African languages</div>
             <div className="hero-stat-hint">our continent&apos;s voice</div>
           </div>

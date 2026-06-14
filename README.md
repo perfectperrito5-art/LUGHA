@@ -12,7 +12,7 @@
 
 <br/>
 
-<img src="https://img.shields.io/badge/languages-2K%2B-1D9E75?style=for-the-badge&labelColor=0a1324" alt="2K+ languages"/>
+<img src="https://img.shields.io/badge/languages-2K%2B-1D9E75?style=for-the-badge&labelColor=0a1324" alt="2000+ languages"/>
 <img src="https://img.shields.io/badge/countries-54-5DCAA5?style=for-the-badge&labelColor=111c31" alt="54 countries"/>
 <img src="https://img.shields.io/badge/stack-FastAPI%20%2B%20React-9db0cd?style=for-the-badge&labelColor=17253d" alt="stack"/>
 <img src="https://img.shields.io/badge/docker-ready-1D9E75?style=for-the-badge&labelColor=0a1324" alt="docker"/>
