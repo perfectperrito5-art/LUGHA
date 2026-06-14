@@ -1,0 +1,87 @@
+# Lugha — full stack (MySQL + FastAPI + React/Vite)
+# Usage:
+#   cp .env.example .env
+#   docker compose up -d --build
+#   open http://localhost:5173
+
+name: lugha
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: lugha-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+      MYSQL_DATABASE: ${DB_NAME:-lugha_db}
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./lugha_mvp/database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p${DB_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+    networks:
+      - lugha
+
+  backend:
+    build:
+      context: ./lugha_mvp/backend
+      dockerfile: Dockerfile
+    container_name: lugha-backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      UVICORN_RELOAD: "1"
+      CORS_ORIGINS: http://localhost:5173,http://127.0.0.1:5173
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    volumes:
+      - ./lugha_mvp/backend/app:/app/app
+    depends_on:
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/')"]
+      interval: 10s
+      timeout: 5s
+      retries: 18
+      start_period: 90s
+    networks:
+      - lugha
+
+  frontend:
+    build:
+      context: ./lugha_mvp/frontend
+      dockerfile: Dockerfile
+    container_name: lugha-frontend
+    restart: unless-stopped
+    environment:
+      VITE_PROXY_TARGET: http://backend:8000
+    ports:
+      - "${FRONTEND_PORT:-5173}:5173"
+    volumes:
+      - ./lugha_mvp/frontend/src:/app/src
+      - ./lugha_mvp/frontend/index.html:/app/index.html
+      - ./lugha_mvp/frontend/vite.config.js:/app/vite.config.js
+      - ./lugha_mvp/frontend/public:/app/public
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - lugha
+
+volumes:
+  mysql_data:
+    name: lugha_mysql_data
+
+networks:
+  lugha:
+    name: lugha_network

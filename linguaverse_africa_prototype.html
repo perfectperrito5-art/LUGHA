@@ -1,0 +1,1655 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1D9E75">
+<meta name="description" content="LinguaVerse - Preserve Africa's 2,000+ languages through AI">
+<link rel="manifest" href="data:application/manifest+json,{%22name%22:%22LinguaVerse%22,%22short_name%22:%22LinguaVerse%22,%22start_url%22:%22/%22,%22display%22:%22standalone%22,%22background_color%22:%22%231D9E75%22,%22theme_color%22:%22%231D9E75%22}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css">
+<style>
+  :root {
+    --font-sans: 'Inter', 'Segoe UI', Roboto, sans-serif;
+    --color-background-primary: #111c31;
+    --color-background-secondary: #17253d;
+    --color-background-tertiary: #0a1324;
+    --color-border-secondary: rgba(173, 196, 232, 0.18);
+    --color-border-tertiary: rgba(173, 196, 232, 0.12);
+    --color-text-primary: #edf3ff;
+    --color-text-secondary: #9db0cd;
+    --border-radius-md: 10px;
+    --border-radius-lg: 16px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: var(--font-sans, 'Inter', sans-serif); background: radial-gradient(ellipse at top, #132544 0%, #0a1324 52%, #060d1a 100%); color: var(--color-text-primary); min-height: 100vh; }
+
+  .screen { display: none; min-height: 100vh; }
+  .screen.active { display: flex; flex-direction: column; }
+
+  /* NAV */
+  .app-nav { background: rgba(9, 19, 37, 0.88); border-bottom: 0.5px solid var(--color-border-tertiary); backdrop-filter: blur(8px); padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 56px; flex-shrink: 0; }
+  .nav-logo { font-size: 17px; font-weight: 500; color: var(--color-text-primary); letter-spacing: -0.3px; }
+  .nav-logo span { color: #1D9E75; }
+  .nav-tabs { display: flex; gap: 4px; }
+  .nav-tab { padding: 6px 14px; border-radius: var(--border-radius-md, 8px); font-size: 13px; cursor: pointer; color: var(--color-text-secondary); border: none; background: none; transition: background 0.15s, color 0.15s; }
+  .nav-tab:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+  .nav-tab.active { background: var(--color-background-secondary); color: var(--color-text-primary); font-weight: 500; }
+  .nav-user { display: flex; align-items: center; gap: 10px; }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; background: #1D9E75; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; color: #fff; }
+
+  /* LANDING */
+  #landing { background: #0a1628; min-height: 100vh; flex-direction: column; }
+  .landing-nav { padding: 1.2rem 2rem; display: flex; align-items: center; justify-content: space-between; z-index: 10; }
+  .landing-logo { font-size: 20px; font-weight: 500; color: #fff; letter-spacing: -0.3px; }
+  .landing-logo span { color: #5DCAA5; }
+  .landing-nav-links { display: flex; gap: 8px; }
+  .btn-ghost { background: transparent; border: 0.5px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.8); padding: 7px 18px; border-radius: var(--border-radius-md); font-size: 13px; cursor: pointer; transition: all 0.15s; }
+  .btn-ghost:hover { border-color: rgba(255,255,255,0.6); color: #fff; }
+  .btn-primary { background: #1D9E75; border: none; color: #fff; padding: 10px 24px; border-radius: var(--border-radius-md); font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.15s; }
+  .btn-primary:hover { background: #0F6E56; }
+
+  .hero { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 4rem 2rem; position: relative; overflow: hidden; }
+  .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 60%, rgba(29,158,117,0.12) 0%, transparent 60%), radial-gradient(ellipse at 70% 30%, rgba(93,202,165,0.08) 0%, transparent 50%); pointer-events: none; }
+
+  /* Africa SVG map dots */
+  .hero-map { position: absolute; inset: 0; opacity: 0.15; pointer-events: none; }
+
+  .hero-badge { background: rgba(29,158,117,0.15); border: 0.5px solid rgba(93,202,165,0.3); color: #5DCAA5; font-size: 12px; padding: 5px 14px; border-radius: 20px; margin-bottom: 1.5rem; display: inline-block; }
+  .hero-title { font-size: 52px; font-weight: 500; color: #fff; line-height: 1.1; letter-spacing: -1px; margin-bottom: 1rem; max-width: 680px; }
+  .hero-title em { color: #5DCAA5; font-style: normal; }
+  .hero-sub { font-size: 16px; color: rgba(255,255,255,0.55); max-width: 480px; line-height: 1.7; margin-bottom: 2.5rem; }
+  .hero-cta { display: flex; gap: 12px; justify-content: center; align-items: center; }
+  .btn-hero { background: #1D9E75; border: none; color: #fff; padding: 14px 32px; border-radius: var(--border-radius-md); font-size: 15px; font-weight: 500; cursor: pointer; transition: background 0.15s; }
+  .btn-hero:hover { background: #0F6E56; }
+  .hero-stats { display: flex; gap: 3rem; margin-top: 4rem; }
+  .hero-stat { text-align: center; }
+  .hero-stat-num { font-size: 28px; font-weight: 500; color: #fff; }
+  .hero-stat-label { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 3px; }
+
+  /* REGISTER */
+  #register { background: var(--color-background-tertiary); }
+  .register-wrap { max-width: 520px; margin: 0 auto; padding: 3rem 1.5rem; width: 100%; }
+  .register-card { background: linear-gradient(150deg, rgba(20,35,59,0.92) 0%, rgba(15,27,47,0.95) 100%); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 2rem; box-shadow: 0 12px 36px rgba(4,10,21,0.35); }
+  .register-title { font-size: 22px; font-weight: 500; margin-bottom: 0.3rem; }
+  .register-sub { font-size: 14px; color: var(--color-text-secondary); margin-bottom: 2rem; }
+  .form-group { margin-bottom: 1.2rem; }
+  .form-label { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 6px; display: block; font-weight: 500; }
+  .form-input { width: 100%; padding: 9px 12px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); font-size: 14px; background: var(--color-background-primary); color: var(--color-text-primary); outline: none; transition: border 0.15s; }
+  .form-input:focus { border-color: #1D9E75; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .lang-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .lang-chip { padding: 5px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; border: 0.5px solid var(--color-border-secondary); background: var(--color-background-secondary); color: var(--color-text-secondary); transition: all 0.15s; user-select: none; }
+  .lang-chip.selected { background: #E1F5EE; border-color: #1D9E75; color: #0F6E56; font-weight: 500; }
+  .interest-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .interest-chip { padding: 7px 14px; border-radius: var(--border-radius-md); font-size: 13px; cursor: pointer; border: 0.5px solid var(--color-border-secondary); background: var(--color-background-secondary); color: var(--color-text-secondary); transition: all 0.15s; }
+  .interest-chip.selected { background: #E1F5EE; border-color: #1D9E75; color: #0F6E56; }
+  .register-divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 1.5rem 0; }
+  .btn-full { width: 100%; padding: 12px; border-radius: var(--border-radius-md); font-size: 15px; font-weight: 500; cursor: pointer; background: #1D9E75; color: #fff; border: none; margin-top: 0.5rem; transition: background 0.15s; }
+  .btn-full:hover { background: #0F6E56; }
+  .register-login { text-align: center; font-size: 13px; color: var(--color-text-secondary); margin-top: 1rem; }
+  .link { color: #1D9E75; cursor: pointer; text-decoration: none; }
+  .link:hover { text-decoration: underline; }
+
+  /* DASHBOARD */
+  #dashboard { background: var(--color-background-tertiary); }
+  .dash-body { flex: 1; padding: 1.5rem; max-width: 900px; margin: 0 auto; width: 100%; }
+  .dash-welcome { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.5rem; }
+  .dash-welcome-text h1 { font-size: 22px; font-weight: 500; }
+  .dash-welcome-text p { font-size: 14px; color: var(--color-text-secondary); margin-top: 4px; }
+  .dash-date { font-size: 13px; color: var(--color-text-secondary); background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 6px 12px; }
+
+  .dash-progress { background: linear-gradient(130deg, rgba(21,35,58,0.92) 0%, rgba(15,27,47,0.95) 100%); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.2rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; box-shadow: 0 10px 32px rgba(4,10,21,0.25); }
+  .prog-item { flex: 1; }
+  .prog-label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 6px; }
+  .prog-val { font-size: 22px; font-weight: 500; }
+  .prog-bar { height: 4px; background: var(--color-background-secondary); border-radius: 4px; margin-top: 8px; overflow: hidden; }
+  .prog-fill { height: 100%; background: #1D9E75; border-radius: 4px; transition: width 0.8s ease; }
+  .prog-divider { width: 0.5px; height: 48px; background: var(--color-border-tertiary); }
+  .prog-streak { text-align: center; }
+  .streak-icon { font-size: 22px; margin-bottom: 4px; }
+
+  .dash-lang-banner { background: linear-gradient(135deg, #0a1628 0%, #0F6E56 100%); border-radius: var(--border-radius-lg); padding: 1.2rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+  .lang-banner-left h3 { color: #fff; font-size: 15px; font-weight: 500; }
+  .lang-banner-left p { color: rgba(255,255,255,0.6); font-size: 13px; margin-top: 4px; }
+  .lang-banner-badges { display: flex; gap: 6px; margin-top: 10px; }
+  .lang-badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+  .lang-badge.speaks { background: rgba(93,202,165,0.2); color: #5DCAA5; border: 0.5px solid rgba(93,202,165,0.3); }
+  .lang-badge.learning { background: rgba(255,199,117,0.2); color: #FAC775; border: 0.5px solid rgba(255,199,117,0.3); }
+  .lang-banner-btn { background: rgba(255,255,255,0.1); border: 0.5px solid rgba(255,255,255,0.2); color: #fff; padding: 8px 16px; border-radius: var(--border-radius-md); font-size: 13px; cursor: pointer; white-space: nowrap; }
+  .lang-banner-btn:hover { background: rgba(255,255,255,0.2); }
+
+  .dash-section-title { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; }
+  .dash-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 1.5rem; }
+  .dash-card { background: linear-gradient(145deg, rgba(21,35,58,0.92) 0%, rgba(15,27,47,0.95) 100%); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.2rem; cursor: pointer; transition: border-color 0.15s, transform 0.1s; }
+  .dash-card:hover { border-color: #1D9E75; transform: translateY(-1px); }
+  .dash-card-icon { width: 40px; height: 40px; border-radius: var(--border-radius-md); display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 10px; }
+  .dash-card h3 { font-size: 14px; font-weight: 500; }
+  .dash-card p { font-size: 12px; color: var(--color-text-secondary); margin-top: 4px; line-height: 1.5; }
+  .dash-card-green .dash-card-icon { background: #E1F5EE; }
+  .dash-card-amber .dash-card-icon { background: #FAEEDA; }
+  .dash-card-blue .dash-card-icon { background: #E6F1FB; }
+  .dash-card-purple .dash-card-icon { background: #EEEDFE; }
+  .dash-card-coral .dash-card-icon { background: #FAECE7; }
+  .dash-card-teal .dash-card-icon { background: #E1F5EE; }
+
+  /* TEACH AI */
+  #teach { background: var(--color-background-tertiary); }
+  .teach-body { flex: 1; padding: 1.5rem; max-width: 700px; margin: 0 auto; width: 100%; }
+  .teach-header { text-align: center; margin-bottom: 2rem; }
+  .teach-header h1 { font-size: 24px; font-weight: 500; }
+  .teach-header p { color: var(--color-text-secondary); font-size: 14px; margin-top: 6px; }
+  .teach-card { background: linear-gradient(145deg, rgba(21,35,58,0.92) 0%, rgba(15,27,47,0.95) 100%); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.75rem; margin-bottom: 1rem; }
+  .teach-step { display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem; }
+  .step-num { width: 24px; height: 24px; border-radius: 50%; background: #1D9E75; color: #fff; font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-label { font-size: 13px; font-weight: 500; }
+  .teach-form { display: flex; flex-direction: column; gap: 1rem; }
+  .teach-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .teach-select { width: 100%; padding: 9px 12px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); font-size: 14px; background: var(--color-background-primary); color: var(--color-text-primary); outline: none; cursor: pointer; }
+  .teach-select:focus { border-color: #1D9E75; }
+  .record-btn { display: flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: var(--border-radius-md); font-size: 14px; cursor: pointer; transition: all 0.15s; border: 0.5px solid var(--color-border-secondary); background: var(--color-background-secondary); color: var(--color-text-secondary); }
+  .record-btn:hover { border-color: #1D9E75; color: #1D9E75; }
+  .record-btn.recording { background: #FAECE7; border-color: #D85A30; color: #D85A30; }
+  .record-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+  .record-dot.pulse { animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  .submit-preview { background: rgba(22, 37, 63, 0.92); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 1rem 1.25rem; margin-top: 0.5rem; }
+  .preview-word { font-size: 28px; font-weight: 500; color: var(--color-text-primary); }
+  .preview-lang { font-size: 13px; color: var(--color-text-secondary); margin-top: 4px; }
+  .preview-meaning { font-size: 15px; color: var(--color-text-primary); margin-top: 8px; padding-top: 8px; border-top: 0.5px solid var(--color-border-tertiary); }
+
+  .impact-banner { background: #0a1628; border-radius: var(--border-radius-lg); padding: 1.5rem; text-align: center; margin-top: 1.5rem; }
+  .impact-banner h3 { color: #5DCAA5; font-size: 18px; font-weight: 500; margin-bottom: 0.5rem; }
+  .impact-banner p { color: rgba(255,255,255,0.6); font-size: 14px; line-height: 1.6; }
+  .impact-stats { display: flex; justify-content: center; gap: 2.5rem; margin-top: 1rem; }
+  .impact-stat-num { font-size: 24px; font-weight: 500; color: #fff; }
+  .impact-stat-label { font-size: 11px; color: rgba(255,255,255,0.4); }
+
+  .contribute-toast { background: #E1F5EE; border: 0.5px solid #1D9E75; border-radius: var(--border-radius-md); padding: 0.75rem 1rem; display: flex; align-items: center; gap: 10px; margin-top: 1rem; display: none; }
+  .contribute-toast.show { display: flex; }
+  .toast-icon { width: 28px; height: 28px; background: #1D9E75; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; flex-shrink: 0; }
+  .toast-text { font-size: 13px; color: #0F6E56; }
+  .toast-text strong { font-weight: 500; }
+
+  /* HEAT MAP */
+  #heatmap { background: #0a1628; }
+  .map-body { flex: 1; display: flex; flex-direction: column; padding: 1rem 1.5rem; }
+  .map-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+  .map-header h2 { color: #fff; font-size: 18px; font-weight: 500; }
+  .map-legend { display: flex; gap: 12px; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: rgba(255,255,255,0.5); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .map-content { flex: 1; display: flex; gap: 1rem; min-height: 0; }
+  .map-svg-wrap { flex: 1; position: relative; }
+  .country-detail { width: 260px; flex-shrink: 0; }
+  .country-card { background: rgba(255,255,255,0.05); border: 0.5px solid rgba(255,255,255,0.1); border-radius: var(--border-radius-lg); padding: 1.25rem; height: 100%; }
+  .country-card-title { font-size: 18px; font-weight: 500; color: #fff; margin-bottom: 4px; }
+  .country-card-sub { font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 1rem; }
+  .country-stat-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 0.5px solid rgba(255,255,255,0.07); }
+  .country-stat-key { font-size: 12px; color: rgba(255,255,255,0.5); }
+  .country-stat-val { font-size: 13px; font-weight: 500; color: #fff; }
+  .lang-list { margin-top: 1rem; }
+  .lang-list-title { font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 8px; }
+  .lang-row { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; border-bottom: 0.5px solid rgba(255,255,255,0.05); }
+  .lang-row-name { font-size: 13px; color: rgba(255,255,255,0.85); }
+  .lang-health { font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 500; }
+  .health-high { background: rgba(29,158,117,0.2); color: #5DCAA5; }
+  .health-mid { background: rgba(250,199,117,0.2); color: #FAC775; }
+  .health-low { background: rgba(216,90,48,0.2); color: #F0997B; }
+  .map-tip { font-size: 12px; color: rgba(255,255,255,0.3); text-align: center; margin-top: 8px; }
+
+  /* HERITAGE LIBRARY */
+  #heritage { background: var(--color-background-tertiary); }
+  .heritage-body { flex: 1; padding: 1.5rem; max-width: 900px; margin: 0 auto; width: 100%; }
+  .heritage-hero { background: #0a1628; border-radius: var(--border-radius-lg); padding: 2rem; margin-bottom: 1.5rem; position: relative; overflow: hidden; }
+  .heritage-hero-bg { position: absolute; inset: 0; opacity: 0.08; font-size: 80px; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+  .heritage-hero h2 { font-size: 20px; font-weight: 500; color: #fff; margin-bottom: 6px; position: relative; }
+  .heritage-hero p { font-size: 14px; color: rgba(255,255,255,0.55); position: relative; max-width: 480px; }
+  .heritage-filters { display: flex; gap: 8px; margin-bottom: 1.2rem; flex-wrap: wrap; }
+  .filter-btn { padding: 6px 14px; border-radius: 20px; font-size: 13px; cursor: pointer; border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-secondary); transition: all 0.15s; }
+  .filter-btn.active, .filter-btn:hover { background: #E1F5EE; border-color: #1D9E75; color: #0F6E56; }
+  .heritage-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+  .heritage-item { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; cursor: pointer; transition: border-color 0.15s; }
+  .heritage-item:hover { border-color: #1D9E75; }
+  .heritage-item-type { font-size: 11px; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+  .type-dot { width: 6px; height: 6px; border-radius: 50%; background: #1D9E75; }
+  .heritage-item h3 { font-size: 15px; font-weight: 500; margin-bottom: 6px; line-height: 1.4; }
+  .heritage-item-excerpt { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; }
+  .heritage-item-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding-top: 10px; border-top: 0.5px solid var(--color-border-tertiary); }
+  .heritage-lang-tag { font-size: 11px; padding: 3px 8px; border-radius: 10px; background: #E1F5EE; color: #0F6E56; font-weight: 500; }
+  .heritage-meta { font-size: 11px; color: var(--color-text-secondary); }
+  .heritage-upload { background: var(--color-background-primary); border: 0.5px dashed var(--color-border-secondary); border-radius: var(--border-radius-lg); padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.15s; }
+  .heritage-upload:hover { border-color: #1D9E75; background: #E1F5EE; }
+  .heritage-upload p { font-size: 14px; color: var(--color-text-secondary); margin-top: 8px; }
+  .heritage-upload strong { color: #1D9E75; }
+
+  /* LEADERBOARD */
+  #leaderboard-screen { background: var(--color-background-tertiary); }
+  .lb-body { flex: 1; padding: 1.5rem; max-width: 700px; margin: 0 auto; width: 100%; }
+  .lb-hero { background: #0a1628; border-radius: var(--border-radius-lg); padding: 1.5rem 2rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+  .lb-hero-left h2 { color: #fff; font-size: 20px; font-weight: 500; }
+  .lb-hero-left p { color: rgba(255,255,255,0.45); font-size: 13px; margin-top: 4px; }
+  .lb-hero-right { text-align: right; }
+  .lb-your-rank { font-size: 36px; font-weight: 500; color: #5DCAA5; }
+  .lb-your-label { font-size: 12px; color: rgba(255,255,255,0.4); }
+  .lb-tabs { display: flex; gap: 6px; margin-bottom: 1.2rem; }
+  .lb-tab { padding: 7px 16px; border-radius: 20px; font-size: 13px; cursor: pointer; border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-secondary); transition: all 0.15s; }
+  .lb-tab.active { background: #1D9E75; border-color: #1D9E75; color: #fff; font-weight: 500; }
+  .lb-list { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; }
+  .lb-item { display: flex; align-items: center; gap: 12px; padding: 12px 1.25rem; border-bottom: 0.5px solid var(--color-border-tertiary); transition: background 0.1s; cursor: pointer; }
+  .lb-item:last-child { border-bottom: none; }
+  .lb-item:hover { background: var(--color-background-secondary); }
+  .lb-item.you { background: #E1F5EE; }
+  .lb-rank { font-size: 14px; font-weight: 500; width: 28px; text-align: center; flex-shrink: 0; }
+  .rank-1 { color: #BA7517; }
+  .rank-2 { color: #888780; }
+  .rank-3 { color: #854F0B; }
+  .lb-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; color: #fff; flex-shrink: 0; }
+  .lb-info { flex: 1; }
+  .lb-name { font-size: 14px; font-weight: 500; }
+  .lb-detail { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+  .lb-badges { display: flex; gap: 4px; }
+  .lb-badge-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+  .lb-score { text-align: right; }
+  .lb-score-num { font-size: 15px; font-weight: 500; color: #1D9E75; }
+  .lb-score-label { font-size: 11px; color: var(--color-text-secondary); }
+  .lb-trophies { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 1.5rem; }
+  .trophy-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem; text-align: center; }
+  .trophy-icon { font-size: 28px; margin-bottom: 6px; }
+  .trophy-name { font-size: 12px; font-weight: 500; color: var(--color-text-primary); }
+  .trophy-desc { font-size: 11px; color: var(--color-text-secondary); margin-top: 3px; }
+
+  /* TRANSLATOR */
+  #translator-screen { background: var(--color-background-tertiary); }
+  .trans-body { flex: 1; padding: 1.5rem; max-width: 700px; margin: 0 auto; width: 100%; }
+  .trans-header h1 { font-size: 22px; font-weight: 500; margin-bottom: 6px; }
+  .trans-header p { font-size: 14px; color: var(--color-text-secondary); margin-bottom: 1.5rem; }
+  .trans-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.5rem; margin-bottom: 1rem; }
+  .trans-lang-row { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; }
+  .trans-lang-sel { flex: 1; padding: 8px 12px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); font-size: 14px; background: var(--color-background-primary); color: var(--color-text-primary); outline: none; cursor: pointer; }
+  .trans-swap { width: 34px; height: 34px; border-radius: 50%; border: 0.5px solid var(--color-border-secondary); background: var(--color-background-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: all 0.15s; flex-shrink: 0; }
+  .trans-swap:hover { border-color: #1D9E75; color: #1D9E75; }
+  .trans-textarea { width: 100%; min-height: 90px; padding: 10px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); font-size: 15px; background: var(--color-background-primary); color: var(--color-text-primary); outline: none; resize: none; font-family: var(--font-sans); transition: border 0.15s; line-height: 1.6; }
+  .trans-textarea:focus { border-color: #1D9E75; }
+  .trans-result { background: var(--color-background-secondary); min-height: 90px; padding: 10px; border-radius: var(--border-radius-md); font-size: 15px; color: var(--color-text-primary); line-height: 1.6; }
+  .trans-loading { color: var(--color-text-secondary); font-size: 14px; display: flex; align-items: center; gap: 8px; }
+  .spinner { width: 16px; height: 16px; border: 2px solid var(--color-border-secondary); border-top-color: #1D9E75; border-radius: 50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .trans-btn { width: 100%; padding: 11px; border-radius: var(--border-radius-md); font-size: 14px; font-weight: 500; cursor: pointer; background: #1D9E75; color: #fff; border: none; margin-top: 1rem; transition: background 0.15s; }
+  .trans-btn:hover { background: #0F6E56; }
+  .trans-btn:disabled { background: var(--color-background-secondary); color: var(--color-text-secondary); cursor: not-allowed; }
+  .trans-examples { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1rem; }
+  .trans-ex-btn { padding: 5px 12px; font-size: 12px; border-radius: 20px; cursor: pointer; border: 0.5px solid var(--color-border-secondary); background: var(--color-background-secondary); color: var(--color-text-secondary); transition: all 0.15s; }
+  .trans-ex-btn:hover { border-color: #1D9E75; color: #1D9E75; }
+
+  /* AFRICA MAP SVG styles */
+  .africa-base { fill: rgba(15, 38, 61, 0.95); stroke: rgba(128, 177, 225, 0.35); stroke-width: 1.2; }
+  .country-path { cursor: pointer; transition: transform 0.2s, opacity 0.2s, stroke 0.2s; }
+  .country-path:hover { transform: scale(1.08); opacity: 0.95; }
+  .country-path.selected { stroke: #ffffff; stroke-width: 2.2; }
+  .country-path.thriving { fill: #5DCAA5; opacity: 0.95; }
+  .country-path.growing { fill: #FAC775; opacity: 0.95; }
+  .country-path.atrisk { fill: #F0997B; opacity: 0.95; }
+  .country-label { fill: rgba(245, 250, 255, 0.72); font-size: 9px; letter-spacing: 0.1px; pointer-events: none; }
+
+  .scroll-wrap { flex: 1; overflow-y: auto; }
+
+  /* ANIMATIONS */
+  @keyframes slideInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+  @keyframes glow { 0%, 100% { box-shadow: 0 0 0 rgba(29,158,117,0.4); } 50% { box-shadow: 0 0 20px rgba(29,158,117,0.8); } }
+  
+  .animate-in { animation: slideInUp 0.5s ease-out; }
+  .animate-bounce { animation: bounce 0.6s ease-in-out; }
+  .glow { animation: glow 2s infinite; }
+
+  /* LIVE FEED */
+  #live-feed { background: var(--color-background-tertiary); }
+  .feed-body { flex: 1; padding: 1.5rem; max-width: 700px; margin: 0 auto; width: 100%; }
+  .feed-header { text-align: center; margin-bottom: 2rem; }
+  .feed-header h1 { font-size: 24px; font-weight: 500; }
+  .feed-header p { color: var(--color-text-secondary); font-size: 14px; margin-top: 6px; }
+  .feed-container { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); max-height: 500px; overflow-y: auto; }
+  .feed-item { padding: 1rem 1.25rem; border-bottom: 0.5px solid var(--color-border-tertiary); display: flex; gap: 12px; animation: slideInUp 0.4s ease-out; }
+  .feed-item:last-child { border-bottom: none; }
+  .feed-avatar { width: 40px; height: 40px; border-radius: 50%; background: #1D9E75; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 500; flex-shrink: 0; }
+  .feed-content { flex: 1; }
+  .feed-name { font-size: 13px; font-weight: 500; }
+  .feed-action { font-size: 13px; color: var(--color-text-secondary); margin-top: 2px; }
+  .feed-lang { display: inline-block; background: #E1F5EE; color: #0F6E56; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 500; margin-left: 4px; }
+  .feed-time { font-size: 11px; color: var(--color-text-secondary); margin-top: 4px; }
+  .feed-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2rem; }
+  .stat-box { background: linear-gradient(145deg, rgba(21,35,58,0.92) 0%, rgba(15,27,47,0.95) 100%); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.5rem; text-align: center; }
+  .stat-num { font-size: 28px; font-weight: 500; color: #5DCAA5; }
+  .stat-label { font-size: 12px; color: var(--color-text-secondary); margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<!-- Ensure global functions exist early to prevent onclick ReferenceErrors -->
+<script>
+  window.showScreen = window.showScreen || function(id){
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const el = document.getElementById(id);
+    if (el) { el.classList.add('active'); el.scrollTop = 0; }
+    const wrap = el ? el.querySelector('.scroll-wrap') : null;
+    if (wrap) wrap.scrollTop = 0;
+  };
+</script>
+
+<!-- Register Service Worker for Offline Support -->
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(reg => console.log('✓ Service Worker registered'))
+      .catch(err => console.log('Service Worker registration skipped'));
+  }
+</script>
+
+<!-- LANDING -->
+<div id="landing" class="screen active">
+  <div class="landing-nav">
+    <div class="landing-logo">[PROJECT_<span>NAME</span>]</div>
+    <div class="landing-nav-links">
+      <button class="btn-ghost" onclick="showScreen('register')">Sign in</button>
+      <button class="btn-primary" onclick="showScreen('register')">Join the movement</button>
+    </div>
+  </div>
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-badge">2,000+ African languages. One mission.</div>
+    <h1 class="hero-title">Every language<br>is a <em>living world.</em></h1>
+    <p class="hero-sub">Learn, teach, and preserve the languages that shape who we are. Help build the future of African AI — one word at a time.</p>
+    <div class="hero-cta">
+      <button class="btn-hero" onclick="showScreen('register')">Get started</button>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-num">2,847</div><div class="hero-stat-label">Languages tracked</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">142K</div><div class="hero-stat-label">Words preserved</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">31K</div><div class="hero-stat-label">Contributors</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">54</div><div class="hero-stat-label">Countries active</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- REGISTER -->
+<div id="register" class="screen">
+  <div style="background: var(--color-background-primary); border-bottom: 0.5px solid var(--color-border-tertiary); padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between;">
+    <div style="font-size: 17px; font-weight: 500; cursor: pointer;" onclick="showScreen('landing')">[PROJECT_<span style="color:#1D9E75">NAME</span>]</div>
+    <div style="font-size: 13px; color: var(--color-text-secondary);">Already have an account? <span class="link" onclick="showScreen('dashboard')">Sign in</span></div>
+  </div>
+  <div class="scroll-wrap">
+  <div class="register-wrap">
+    <div class="register-card">
+      <div class="register-title">Create your account</div>
+      <div class="register-sub">Join thousands preserving Africa's languages</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">First name</label>
+          <input class="form-input" type="text" placeholder="e.g. Amara" id="reg-name" value="Perfect">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Country</label>
+          <select class="form-input" id="reg-country">
+            <option>Tanzania</option><option>Kenya</option><option>Nigeria</option><option>Uganda</option><option>Ghana</option><option>Ethiopia</option><option>South Africa</option><option>Senegal</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" type="email" placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" type="password" placeholder="Create a strong password">
+      </div>
+      <hr class="register-divider">
+      <div class="form-group">
+        <label class="form-label">Languages I speak</label>
+        <div class="lang-chips" id="speaks-chips">
+          <span class="lang-chip selected" data-lang="Swahili">Swahili</span>
+          <span class="lang-chip selected" data-lang="English">English</span>
+          <span class="lang-chip selected" data-lang="Sukuma">Sukuma</span>
+          <span class="lang-chip" data-lang="Yoruba">Yoruba</span>
+          <span class="lang-chip" data-lang="Hausa">Hausa</span>
+          <span class="lang-chip" data-lang="Amharic">Amharic</span>
+          <span class="lang-chip" data-lang="Zulu">Zulu</span>
+          <span class="lang-chip" data-lang="Igbo">Igbo</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Languages I want to learn</label>
+        <div class="lang-chips" id="learning-chips">
+          <span class="lang-chip selected" data-lang="French">French</span>
+          <span class="lang-chip" data-lang="Arabic">Arabic</span>
+          <span class="lang-chip" data-lang="Portuguese">Portuguese</span>
+          <span class="lang-chip" data-lang="Yoruba">Yoruba</span>
+          <span class="lang-chip" data-lang="Amharic">Amharic</span>
+          <span class="lang-chip" data-lang="Hausa">Hausa</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">I want to</label>
+        <div class="interest-chips">
+          <span class="interest-chip selected">Learn languages</span>
+          <span class="interest-chip selected">Teach AI</span>
+          <span class="interest-chip selected">Preserve culture</span>
+          <span class="interest-chip">Translate</span>
+          <span class="interest-chip">Connect with speakers</span>
+        </div>
+      </div>
+      <button class="btn-full" onclick="completeRegister()">Create account →</button>
+      <div class="register-login">Already have an account? <span class="link" onclick="showLoginScreen()">Sign in</span></div>
+
+      <div id="login-panel" style="margin-top: 18px; display:none;">
+        <div class="register-title" style="font-size:18px; margin-bottom:10px;">Sign in</div>
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input class="form-input" type="text" id="login-username" placeholder="your_username" value="perfect">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input class="form-input" type="password" id="login-password" placeholder="your password">
+        </div>
+        <button class="btn-full" onclick="doLogin()" style="margin-top: 8px;">Login →</button>
+        <div class="register-login" style="margin-top: 12px;">
+          New here? <span class="link" onclick="showRegisterScreen()">Create account</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="screen">
+  <div class="app-nav">
+    <div class="nav-logo">[PROJECT_<span>NAME</span>]</div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showScreen('dashboard')">Home</button>
+      <button class="nav-tab" onclick="showScreen('teach')">Teach AI</button>
+      <button class="nav-tab" onclick="showScreen('translator-screen')">Translate</button>
+      <button class="nav-tab" onclick="showScreen('heritage')">Heritage</button>
+      <button class="nav-tab" onclick="showScreen('heatmap')">Map</button>
+      <button class="nav-tab" onclick="showScreen('leaderboard-screen')">Leaders</button>
+      <button class="nav-tab" onclick="showScreen('live-feed')">Live 🔴</button>
+    </div>
+    <div class="nav-user">
+      <div style="font-size: 13px; color: var(--color-text-secondary);" id="nav-name-label">Perfect</div>
+      <div class="avatar" id="nav-avatar">P</div>
+    </div>
+  </div>
+  <div class="scroll-wrap">
+  <div class="dash-body">
+    <div class="dash-welcome">
+      <div class="dash-welcome-text">
+        <h1>Welcome back, <span id="dash-username">Perfect</span> 👋</h1>
+        <p>You're helping preserve Sukuma and 2 other languages today.</p>
+      </div>
+      <div class="dash-date" id="dash-date"></div>
+    </div>
+
+    <div class="dash-progress">
+      <div class="prog-item">
+        <div class="prog-label">Today's lessons</div>
+        <div class="prog-val" id="prog-lessons">2 / 5</div>
+        <div class="prog-bar"><div class="prog-fill" id="prog-lessons-bar" style="width: 40%"></div></div>
+      </div>
+      <div class="prog-divider"></div>
+      <div class="prog-item">
+        <div class="prog-label">Words contributed</div>
+        <div class="prog-val" id="prog-words">15</div>
+        <div class="prog-bar"><div class="prog-fill" style="width: 30%; background: #FAC775;"></div></div>
+      </div>
+      <div class="prog-divider"></div>
+      <div class="prog-item">
+        <div class="prog-label">Community impact</div>
+        <div class="prog-val">1,284 pts</div>
+        <div class="prog-bar"><div class="prog-fill" style="width: 65%; background: #7F77DD;"></div></div>
+      </div>
+      <div class="prog-divider"></div>
+      <div class="prog-streak" style="flex: 0.6;">
+        <div class="streak-icon">🔥</div>
+        <div class="prog-val" style="font-size: 18px;">7</div>
+        <div class="prog-label">Day streak</div>
+      </div>
+    </div>
+
+    <div class="dash-lang-banner">
+      <div class="lang-banner-left">
+        <h3>Your language profile</h3>
+        <p>3 languages spoken · 1 learning · 15 words contributed to African AI</p>
+        <div class="lang-banner-badges">
+          <span class="lang-badge speaks">Swahili</span>
+          <span class="lang-badge speaks">English</span>
+          <span class="lang-badge speaks">Sukuma</span>
+          <span class="lang-badge learning">French →</span>
+        </div>
+      </div>
+      <button class="lang-banner-btn" onclick="showScreen('teach')">Teach AI your language →</button>
+    </div>
+
+    <div class="dash-section-title">Your tools</div>
+    <div class="dash-grid">
+      <div class="dash-card dash-card-green" onclick="showScreen('teach')">
+        <div class="dash-card-icon">🤖</div>
+        <h3>Teach AI</h3>
+        <p>Contribute words, phrases, and recordings to preserve your language in future AI models.</p>
+      </div>
+      <div class="dash-card dash-card-amber" onclick="showScreen('translator-screen')">
+        <div class="dash-card-icon">🌐</div>
+        <h3>AI Translator</h3>
+        <p>Translate text across African and global languages — powered by real AI.</p>
+      </div>
+      <div class="dash-card dash-card-purple" onclick="showScreen('heritage')">
+        <div class="dash-card-icon">📚</div>
+        <h3>Heritage Library</h3>
+        <p>Explore and contribute proverbs, folktales, songs, and stories.</p>
+      </div>
+      <div class="dash-card dash-card-blue" onclick="showScreen('heatmap')">
+        <div class="dash-card-icon">🗺️</div>
+        <h3>Language Map</h3>
+        <p>See Africa's language landscape — health scores, contributors, and at-risk languages.</p>
+      </div>
+      <div class="dash-card dash-card-coral" onclick="showScreen('leaderboard-screen')">
+        <div class="dash-card-icon">🏆</div>
+        <h3>Leaderboard</h3>
+        <p>Top contributors shaping the future of African AI. Claim your place.</p>
+      </div>
+      <div class="dash-card dash-card-teal">
+        <div class="dash-card-icon">👥</div>
+        <h3>Language partners</h3>
+        <p>Connect with native speakers to practice and exchange languages.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- TEACH AI -->
+<div id="teach" class="screen">
+  <div class="app-nav">
+    <div class="nav-logo">[PROJECT_<span>NAME</span>]</div>
+    <div class="nav-tabs">
+      <button class="nav-tab" onclick="showScreen('dashboard')">Home</button>
+      <button class="nav-tab active">Teach AI</button>
+      <button class="nav-tab" onclick="showScreen('translator-screen')">Translate</button>
+      <button class="nav-tab" onclick="showScreen('heritage')">Heritage</button>
+      <button class="nav-tab" onclick="showScreen('heatmap')">Map</button>
+      <button class="nav-tab" onclick="showScreen('leaderboard-screen')">Leaders</button>
+    </div>
+    <div class="nav-user"><div class="avatar">P</div></div>
+  </div>
+  <div class="scroll-wrap">
+  <div class="teach-body">
+    <div class="teach-header">
+      <h1>Teach AI your language</h1>
+      <p>Every word you contribute helps preserve your language and trains the next generation of African AI.</p>
+    </div>
+
+    <div class="teach-card">
+      <div class="teach-step"><div class="step-num">1</div><div class="step-label">Choose a language</div></div>
+      <div class="teach-row">
+        <div>
+          <label class="form-label">Language</label>
+          <select class="teach-select" id="teach-lang">
+            <option value="Sukuma">Sukuma</option>
+            <option value="Swahili">Swahili</option>
+            <option value="Chagga">Chagga</option>
+            <option value="Makonde">Makonde</option>
+            <option value="Hehe">Hehe</option>
+            <option value="Nyamwezi">Nyamwezi</option>
+            <option value="Sandawe">Sandawe</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label">Region</label>
+          <select class="teach-select">
+            <option>Mwanza Region, Tanzania</option>
+            <option>Dar es Salaam, Tanzania</option>
+            <option>Kilimanjaro, Tanzania</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="teach-card">
+      <div class="teach-step"><div class="step-num">2</div><div class="step-label">Enter the word</div></div>
+      <div class="teach-form">
+        <div class="teach-row">
+          <div>
+            <label class="form-label">Word or phrase</label>
+            <input class="form-input" type="text" id="teach-word" placeholder="e.g. Ng'wana" value="Ng'wana">
+          </div>
+          <div>
+            <label class="form-label">Part of speech</label>
+            <select class="teach-select">
+              <option>Noun</option><option>Verb</option><option>Adjective</option><option>Phrase</option><option>Proverb</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="form-label">Meaning in English</label>
+          <input class="form-input" type="text" id="teach-meaning" placeholder="What does it mean?" value="Child">
+        </div>
+        <div>
+          <label class="form-label">Example sentence (optional)</label>
+          <input class="form-input" type="text" placeholder="e.g. Ng'wana wangu ana miaka mitatu.">
+        </div>
+      </div>
+    </div>
+
+    <div class="teach-card">
+      <div class="teach-step"><div class="step-num">3</div><div class="step-label">Record pronunciation</div></div>
+      <button class="record-btn" id="record-btn" onclick="toggleRecord()">
+        <span class="record-dot" id="record-dot"></span>
+        <span id="record-label">Record audio</span>
+      </button>
+      <p style="font-size: 12px; color: var(--color-text-secondary); margin-top: 8px;">Audio recordings improve AI pronunciation accuracy for your language.</p>
+    </div>
+
+    <div class="submit-preview" id="teach-preview">
+      <div class="preview-word" id="preview-word">Ng'wana</div>
+      <div class="preview-lang" id="preview-lang">Sukuma · Noun · Mwanza Region</div>
+      <div class="preview-meaning" id="preview-meaning">Child</div>
+    </div>
+
+    <button class="btn-full" style="margin-top: 1rem;" onclick="submitWord()">Contribute to African AI →</button>
+
+    <div class="contribute-toast" id="contribute-toast">
+      <div class="toast-icon">✓</div>
+      <div class="toast-text"><strong id="toast-word">Ng'wana</strong> has been saved. You've helped preserve <strong id="toast-lang">Sukuma</strong> and improve future African AI.</div>
+    </div>
+
+    <div class="impact-banner">
+      <h3>Your impact, <span id="impact-name">Perfect</span></h3>
+      <p>Every contribution you make today becomes part of tomorrow's African AI training data — ensuring the continent's languages are heard, understood, and never forgotten.</p>
+      <div class="impact-stats">
+        <div><div class="impact-stat-num" id="impact-words">15</div><div class="impact-stat-label">Words contributed</div></div>
+        <div><div class="impact-stat-num">3</div><div class="impact-stat-label">Languages supported</div></div>
+        <div><div class="impact-stat-num">1,284</div><div class="impact-stat-label">Community points</div></div>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- TRANSLATOR -->
+<div id="translator-screen" class="screen">
+  <div class="app-nav">
+    <div class="nav-logo">[PROJECT_<span>NAME</span>]</div>
+    <div class="nav-tabs">
+      <button class="nav-tab" onclick="showScreen('dashboard')">Home</button>
+      <button class="nav-tab" onclick="showScreen('teach')">Teach AI</button>
+      <button class="nav-tab active">Translate</button>
+      <button class="nav-tab" onclick="showScreen('heritage')">Heritage</button>
+      <button class="nav-tab" onclick="showScreen('heatmap')">Map</button>
+      <button class="nav-tab" onclick="showScreen('leaderboard-screen')">Leaders</button>
+    </div>
+    <div class="nav-user"><div class="avatar">P</div></div>
+  </div>
+  <div class="scroll-wrap">
+  <div class="trans-body">
+    <div class="trans-header">
+      <h1>AI Translator</h1>
+      <p>Translate across African and world languages — powered by Claude AI.</p>
+    </div>
+    <div style="font-size: 13px; color: var(--color-text-secondary); margin-bottom: 8px;">Try an example:</div>
+    <div class="trans-examples">
+      <button class="trans-ex-btn" onclick="setExample('Habari za asubuhi?', 'Swahili', 'English')">Habari za asubuhi? (Swahili→EN)</button>
+      <button class="trans-ex-btn" onclick="setExample('Ubuntu ungumuntu ngabantu', 'Zulu', 'English')">Ubuntu proverb (Zulu→EN)</button>
+      <button class="trans-ex-btn" onclick="setExample('The rain does not fall on one roof alone', 'English', 'Swahili')">African proverb (EN→SW)</button>
+      <button class="trans-ex-btn" onclick="setExample('Bonjour, comment tu vas?', 'French', 'Swahili')">French→Swahili</button>
+    </div>
+    <div class="trans-card">
+      <div class="trans-lang-row">
+        <select class="trans-lang-sel" id="trans-from">
+          <option>English</option><option selected>Swahili</option><option>French</option><option>Arabic</option><option>Zulu</option><option>Yoruba</option><option>Hausa</option><option>Amharic</option><option>Sukuma</option><option>Igbo</option><option>Portuguese</option>
+        </select>
+        <button class="trans-swap" onclick="swapLangs()" title="Swap languages">⇄</button>
+        <select class="trans-lang-sel" id="trans-to">
+          <option selected>English</option><option>Swahili</option><option>French</option><option>Arabic</option><option>Zulu</option><option>Yoruba</option><option>Hausa</option><option>Amharic</option><option>Sukuma</option><option>Igbo</option><option>Portuguese</option>
+        </select>
+      </div>
+      <label class="form-label">Input text</label>
+      <textarea class="trans-textarea" id="trans-input" placeholder="Type something to translate..."></textarea>
+      <button class="trans-btn" id="trans-btn" onclick="doTranslate()">Translate →</button>
+    </div>
+    <div class="trans-card">
+      <label class="form-label">Translation</label>
+      <div class="trans-result" id="trans-result">
+        <span style="color: var(--color-text-secondary); font-size: 14px;">Translation will appear here...</span>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- HERITAGE LIBRARY -->
+<div id="heritage" class="screen">
+  <div class="app-nav">
+    <div class="nav-logo">[PROJECT_<span>NAME</span>]</div>
+    <div class="nav-tabs">
+      <button class="nav-tab" onclick="showScreen('dashboard')">Home</button>
+      <button class="nav-tab" onclick="showScreen('teach')">Teach AI</button>
+      <button class="nav-tab" onclick="showScreen('translator-screen')">Translate</button>
+      <button class="nav-tab active">Heritage</button>
+      <button class="nav-tab" onclick="showScreen('heatmap')">Map</button>
+      <button class="nav-tab" onclick="showScreen('leaderboard-screen')">Leaders</button>
+    </div>
+    <div class="nav-user"><div class="avatar">P</div></div>
+  </div>
+  <div class="scroll-wrap">
+  <div class="heritage-body">
+    <div class="heritage-hero">
+      <div class="heritage-hero-bg">𓂀</div>
+      <h2>The Heritage Library</h2>
+      <p>A living museum of African oral tradition — proverbs, folktales, songs, and stories contributed by communities across the continent.</p>
+      <div style="display: flex; gap: 1.5rem; margin-top: 1rem;">
+        <div><div style="font-size: 20px; font-weight: 500; color: #5DCAA5;">8,420</div><div style="font-size: 11px; color: rgba(255,255,255,0.4);">Stories archived</div></div>
+        <div><div style="font-size: 20px; font-weight: 500; color: #FAC775;">143</div><div style="font-size: 11px; color: rgba(255,255,255,0.4);">Languages represented</div></div>
+        <div><div style="font-size: 20px; font-weight: 500; color: #AFA9EC;">2,100</div><div style="font-size: 11px; color: rgba(255,255,255,0.4);">Contributors</div></div>
+      </div>
+    </div>
+
+    <div class="heritage-filters">
+      <button class="filter-btn active" onclick="setFilter(this)">All</button>
+      <button class="filter-btn" onclick="setFilter(this)">Proverbs</button>
+      <button class="filter-btn" onclick="setFilter(this)">Folktales</button>
+      <button class="filter-btn" onclick="setFilter(this)">Songs</button>
+      <button class="filter-btn" onclick="setFilter(this)">Stories</button>
+      <button class="filter-btn" onclick="setFilter(this)">Riddles</button>
+    </div>
+
+    <div class="heritage-grid">
+      <div class="heritage-item">
+        <div class="heritage-item-type"><span class="type-dot"></span>Folktale</div>
+        <h3>The Clever Hare and the Elephant King</h3>
+        <p class="heritage-item-excerpt">In the days when all animals spoke freely, a small hare outwitted the great elephant through patience and wit — teaching that wisdom holds more power than strength...</p>
+        <div class="heritage-item-foot">
+          <span class="heritage-lang-tag">Makonde</span>
+          <span class="heritage-meta">Tanzania · 3 mins read</span>
+        </div>
+      </div>
+      <div class="heritage-item">
+        <div class="heritage-item-type"><span class="type-dot" style="background:#FAC775"></span>Proverb</div>
+        <h3>Umoja ni nguvu, utengano ni udhaifu</h3>
+        <p class="heritage-item-excerpt">Unity is strength, division is weakness. One of East Africa's most enduring proverbs, woven into the founding of multiple nations as a call for collective resolve...</p>
+        <div class="heritage-item-foot">
+          <span class="heritage-lang-tag">Swahili</span>
+          <span class="heritage-meta">East Africa · Proverb</span>
+        </div>
+      </div>
+      <div class="heritage-item">
+        <div class="heritage-item-type"><span class="type-dot" style="background:#AFA9EC"></span>Song</div>
+        <h3>Malaika — the Angel Song</h3>
+        <p class="heritage-item-excerpt">A beloved Swahili folk song that has traveled across generations and continents, speaking of love, longing, and the beauty found in simplicity and devotion...</p>
+        <div class="heritage-item-foot">
+          <span class="heritage-lang-tag">Swahili</span>
+          <span class="heritage-meta">Kenya/Tanzania · Folk song</span>
+        </div>
+      </div>
+      <div class="heritage-item">
+        <div class="heritage-item-type"><span class="type-dot" style="background:#F0997B"></span>Riddle</div>
+        <h3>Naomba jibu — ancient Sukuma riddles</h3>
+        <p class="heritage-item-excerpt">A collection of traditional Sukuma riddles used to teach children logic, nature observation, and cultural values. Passed orally for centuries, now digitally preserved...</p>
+        <div class="heritage-item-foot">
+          <span class="heritage-lang-tag">Sukuma</span>
+          <span class="heritage-meta">Mwanza, Tanzania · 12 riddles</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="heritage-upload" onclick="showScreen('teach')">
+      <div style="font-size: 28px;">📜</div>
+      <p><strong>Contribute to the library</strong> — Upload a proverb, story, or song from your culture</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- HEAT MAP -->
+<div id="heatmap" class="screen">
+  <div style="background: rgba(255,255,255,0.04); border-bottom: 0.5px solid rgba(255,255,255,0.08); padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 56px; flex-shrink: 0;">
+    <div style="font-size: 17px; font-weight: 500; color: #fff;">
+      [PROJECT_<span style="color:#5DCAA5">NAME</span>]
+    </div>
+    <div style="display: flex; gap: 4px;">
+      <button style="padding: 6px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; color: rgba(255,255,255,0.6); border: none; background: none;" onclick="showScreen('dashboard')">Home</button>
+      <button style="padding: 6px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; color: rgba(255,255,255,0.6); border: none; background: none;" onclick="showScreen('teach')">Teach AI</button>
+      <button style="padding: 6px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; color: rgba(255,255,255,0.6); border: none; background: none;" onclick="showScreen('translator-screen')">Translate</button>
+      <button style="padding: 6px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; color: rgba(255,255,255,0.6); border: none; background: none;" onclick="showScreen('heritage')">Heritage</button>
+      <button style="padding: 6px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; color: rgba(255,255,255,0.8); font-weight: 500; border: none; background: rgba(255,255,255,0.08); border-radius: 8px;">Map</button>
+      <button style="padding: 6px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; color: rgba(255,255,255,0.6); border: none; background: none;" onclick="showScreen('leaderboard-screen')">Leaders</button>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <div style="width: 32px; height: 32px; border-radius: 50%; background: #1D9E75; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; color: #fff;">P</div>
+    </div>
+  </div>
+  <div class="map-body">
+    <div class="map-header">
+      <h2>African Language Heat Map</h2>
+      <div class="map-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#5DCAA5"></div>Thriving</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#FAC775"></div>Growing</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#F0997B"></div>At risk</div>
+      </div>
+    </div>
+    <div class="map-content">
+      <div class="map-svg-wrap">
+        <svg id="africa-map" viewBox="0 0 420 520" width="100%" style="cursor: default;">
+          <defs>
+            <radialGradient id="mapGlow" cx="50%" cy="45%" r="55%">
+              <stop offset="0%" stop-color="#2D527E" stop-opacity="0.22"/>
+              <stop offset="100%" stop-color="#0B1324" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <rect x="0" y="0" width="420" height="520" fill="url(#mapGlow)"/>
+          <path class="africa-base" d="M168 34 L244 44 L304 83 L343 134 L362 195 L388 258 L374 338 L346 405 L302 455 L264 475 L218 487 L175 476 L149 434 L136 392 L111 360 L96 322 L92 284 L78 248 L63 203 L74 158 L102 120 L136 91 Z"/>
+          <ellipse cx="388" cy="402" rx="21" ry="44" fill="rgba(15, 38, 61, 0.95)" stroke="rgba(128, 177, 225, 0.35)" stroke-width="1.2"/>
+
+          <circle class="country-path growing" cx="182" cy="88" r="8" data-country="Morocco" onclick="selectCountry('Morocco')"/>
+          <circle class="country-path thriving" cx="229" cy="103" r="10" data-country="Algeria" onclick="selectCountry('Algeria')"/>
+          <circle class="country-path thriving" cx="294" cy="105" r="8.5" data-country="Egypt" onclick="selectCountry('Egypt')"/>
+          <circle class="country-path atrisk" cx="154" cy="151" r="8" data-country="Mauritania" onclick="selectCountry('Mauritania')"/>
+          <circle class="country-path growing" cx="197" cy="160" r="8.5" data-country="Mali" onclick="selectCountry('Mali')"/>
+          <circle class="country-path growing" cx="136" cy="182" r="8" data-country="Senegal" onclick="selectCountry('Senegal')"/>
+          <circle class="country-path thriving selected" cx="230" cy="216" r="11" data-country="Nigeria" onclick="selectCountry('Nigeria')"/>
+          <circle class="country-path thriving" cx="200" cy="214" r="8" data-country="Ghana" onclick="selectCountry('Ghana')"/>
+          <circle class="country-path atrisk" cx="263" cy="182" r="8" data-country="Niger" onclick="selectCountry('Niger')"/>
+          <circle class="country-path thriving" cx="296" cy="236" r="10" data-country="Ethiopia" onclick="selectCountry('Ethiopia')"/>
+          <circle class="country-path thriving" cx="298" cy="288" r="9.5" data-country="Kenya" onclick="selectCountry('Kenya')"/>
+          <circle class="country-path thriving" cx="284" cy="323" r="9.5" data-country="Tanzania" onclick="selectCountry('Tanzania')"/>
+          <circle class="country-path thriving" cx="243" cy="278" r="9" data-country="DR Congo" onclick="selectCountry('DR Congo')"/>
+          <circle class="country-path thriving" cx="265" cy="417" r="10" data-country="South Africa" onclick="selectCountry('South Africa')"/>
+          <circle class="country-path atrisk" cx="386" cy="402" r="7.5" data-country="Madagascar" onclick="selectCountry('Madagascar')"/>
+          <circle class="country-path atrisk" cx="329" cy="270" r="8" data-country="Somalia" onclick="selectCountry('Somalia')"/>
+
+          <text class="country-label" x="213" y="90">North Africa</text>
+          <text class="country-label" x="170" y="214">West Africa</text>
+          <text class="country-label" x="278" y="286">East Africa</text>
+          <text class="country-label" x="228" y="278">Central Africa</text>
+          <text class="country-label" x="236" y="442">Southern Africa</text>
+        </svg>
+        <div class="map-tip">Click any country to explore its languages</div>
+      </div>
+      <div class="country-detail">
+        <div class="country-card" id="country-card">
+          <div class="country-card-title" id="cc-name">Nigeria</div>
+          <div class="country-card-sub" id="cc-sub">West Africa · Thriving</div>
+          <div class="country-stat-row"><span class="country-stat-key">Languages</span><span class="country-stat-val" id="cc-langs">524</span></div>
+          <div class="country-stat-row"><span class="country-stat-key">Contributors</span><span class="country-stat-val" id="cc-contribs">4,820</span></div>
+          <div class="country-stat-row"><span class="country-stat-key">Words preserved</span><span class="country-stat-val" id="cc-words">87,400</span></div>
+          <div class="country-stat-row"><span class="country-stat-key">Audio samples</span><span class="country-stat-val" id="cc-audio">21,300</span></div>
+          <div class="lang-list">
+            <div class="lang-list-title">Featured languages</div>
+            <div id="cc-lang-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LEADERBOARD -->
+<div id="leaderboard-screen" class="screen">
+  <div class="app-nav">
+    <div class="nav-logo">[PROJECT_<span>NAME</span>]</div>
+    <div class="nav-tabs">
+      <button class="nav-tab" onclick="showScreen('dashboard')">Home</button>
+      <button class="nav-tab" onclick="showScreen('teach')">Teach AI</button>
+      <button class="nav-tab" onclick="showScreen('translator-screen')">Translate</button>
+      <button class="nav-tab" onclick="showScreen('heritage')">Heritage</button>
+      <button class="nav-tab" onclick="showScreen('heatmap')">Map</button>
+      <button class="nav-tab active">Leaders</button>
+    </div>
+    <div class="nav-user"><div class="avatar">P</div></div>
+  </div>
+  <div class="scroll-wrap">
+  <div class="lb-body">
+    <div class="lb-hero">
+      <div class="lb-hero-left">
+        <h2>Language Guardians</h2>
+        <p>The keepers of Africa's living heritage</p>
+        <div style="display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap;">
+          <span class="lang-badge speaks" style="font-size: 11px;">Tanzania 🇹🇿</span>
+          <span class="lang-badge speaks" style="font-size: 11px;">Kenya 🇰🇪</span>
+          <span class="lang-badge speaks" style="font-size: 11px;">Nigeria 🇳🇬</span>
+          <span class="lang-badge speaks" style="font-size: 11px;">Ghana 🇬🇭</span>
+          <span class="lang-badge speaks" style="font-size: 11px;">Ethiopia 🇪🇹</span>
+        </div>
+      </div>
+      <div class="lb-hero-right">
+        <div class="lb-your-rank">#14</div>
+        <div class="lb-your-label">Your global rank</div>
+      </div>
+    </div>
+
+    <div class="lb-tabs">
+      <button class="lb-tab active">Global</button>
+      <button class="lb-tab">Tanzania</button>
+      <button class="lb-tab">This week</button>
+    </div>
+
+    <div class="lb-list">
+      <div class="lb-item">
+        <div class="lb-rank rank-1">1</div>
+        <div class="lb-avatar" style="background:#BA7517;">AO</div>
+        <div class="lb-info">
+          <div class="lb-name">Adaeze Okonkwo</div>
+          <div class="lb-detail">Nigeria · Yoruba · Igbo · Hausa</div>
+        </div>
+        <div class="lb-badges">
+          <div class="lb-badge-icon" style="background:#FAEEDA;" title="Language Guardian">🏆</div>
+          <div class="lb-badge-icon" style="background:#E1F5EE;" title="AI Trainer">🤖</div>
+          <div class="lb-badge-icon" style="background:#EEEDFE;" title="Story Keeper">📚</div>
+        </div>
+        <div class="lb-score"><div class="lb-score-num">12,840</div><div class="lb-score-label">points</div></div>
+      </div>
+      <div class="lb-item">
+        <div class="lb-rank rank-2">2</div>
+        <div class="lb-avatar" style="background:#0F6E56;">KM</div>
+        <div class="lb-info">
+          <div class="lb-name">Kofi Mensah</div>
+          <div class="lb-detail">Ghana · Twi · Ga · Dagbani</div>
+        </div>
+        <div class="lb-badges">
+          <div class="lb-badge-icon" style="background:#FAEEDA;">🏆</div>
+          <div class="lb-badge-icon" style="background:#E1F5EE;">🤖</div>
+        </div>
+        <div class="lb-score"><div class="lb-score-num">10,220</div><div class="lb-score-label">points</div></div>
+      </div>
+      <div class="lb-item">
+        <div class="lb-rank rank-3">3</div>
+        <div class="lb-avatar" style="background:#534AB7;">FT</div>
+        <div class="lb-info">
+          <div class="lb-name">Fatuma Tarehe</div>
+          <div class="lb-detail">Tanzania · Swahili · Makonde · Zaramo</div>
+        </div>
+        <div class="lb-badges">
+          <div class="lb-badge-icon" style="background:#FAEEDA;">🏆</div>
+          <div class="lb-badge-icon" style="background:#FAECE7;">🌍</div>
+        </div>
+        <div class="lb-score"><div class="lb-score-num">9,870</div><div class="lb-score-label">points</div></div>
+      </div>
+      <div class="lb-item">
+        <div class="lb-rank" style="color:var(--color-text-secondary)">4</div>
+        <div class="lb-avatar" style="background:#D85A30;">BH</div>
+        <div class="lb-info">
+          <div class="lb-name">Biruk Haile</div>
+          <div class="lb-detail">Ethiopia · Amharic · Oromo · Tigrinya</div>
+        </div>
+        <div class="lb-badges">
+          <div class="lb-badge-icon" style="background:#E1F5EE;">🤖</div>
+        </div>
+        <div class="lb-score"><div class="lb-score-num">8,100</div><div class="lb-score-label">points</div></div>
+      </div>
+      <div class="lb-item">
+        <div class="lb-rank" style="color:var(--color-text-secondary)">5</div>
+        <div class="lb-avatar" style="background:#185FA5;">SN</div>
+        <div class="lb-info">
+          <div class="lb-name">Sade Nwosu</div>
+          <div class="lb-detail">Nigeria · Igbo · Edo</div>
+        </div>
+        <div class="lb-badges">
+          <div class="lb-badge-icon" style="background:#E6F1FB;">📜</div>
+        </div>
+        <div class="lb-score"><div class="lb-score-num">7,450</div><div class="lb-score-label">points</div></div>
+      </div>
+      <div class="lb-item you">
+        <div class="lb-rank" style="color:#1D9E75; font-weight:500;">14</div>
+        <div class="lb-avatar" style="background:#1D9E75;">P</div>
+        <div class="lb-info">
+          <div class="lb-name">Perfect (You)</div>
+          <div class="lb-detail">Tanzania · Sukuma · Swahili · English</div>
+        </div>
+        <div class="lb-badges">
+          <div class="lb-badge-icon" style="background:#E1F5EE;">🤖</div>
+        </div>
+        <div class="lb-score"><div class="lb-score-num">1,284</div><div class="lb-score-label">points</div></div>
+      </div>
+    </div>
+
+    <div style="font-size: 13px; color: var(--color-text-secondary); text-align: center; margin: 1rem 0;">Earn badges, preserve languages, climb the ranks.</div>
+
+    <div class="lb-trophies">
+      <div class="trophy-card">
+        <div class="trophy-icon">🏆</div>
+        <div class="trophy-name">Language Guardian</div>
+        <div class="trophy-desc">Contribute 500+ words</div>
+      </div>
+      <div class="trophy-card">
+        <div class="trophy-icon">🤖</div>
+        <div class="trophy-name">AI Trainer</div>
+        <div class="trophy-desc">50+ audio recordings</div>
+      </div>
+      <div class="trophy-card">
+        <div class="trophy-icon">📚</div>
+        <div class="trophy-name">Story Keeper</div>
+        <div class="trophy-desc">10+ heritage uploads</div>
+      </div>
+      <div class="trophy-card">
+        <div class="trophy-icon">🌍</div>
+        <div class="trophy-name">Heritage Hero</div>
+        <div class="trophy-desc">Preserve a rare language</div>
+      </div>
+      <div class="trophy-card">
+        <div class="trophy-icon">🌐</div>
+        <div class="trophy-name">Master Translator</div>
+        <div class="trophy-desc">1000+ translations</div>
+      </div>
+      <div class="trophy-card">
+        <div class="trophy-icon">🔥</div>
+        <div class="trophy-name">Tamaduni Flame</div>
+        <div class="trophy-desc">30-day contribution streak</div>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- LIVE FEED -->
+<div id="live-feed" class="screen">
+  <div class="app-nav">
+    <div class="nav-logo">[PROJECT_<span>NAME</span>]</div>
+    <div class="nav-tabs">
+      <button class="nav-tab" onclick="showScreen('dashboard')">Home</button>
+      <button class="nav-tab" onclick="showScreen('teach')">Teach AI</button>
+      <button class="nav-tab" onclick="showScreen('translator-screen')">Translate</button>
+      <button class="nav-tab" onclick="showScreen('heritage')">Heritage</button>
+      <button class="nav-tab" onclick="showScreen('heatmap')">Map</button>
+      <button class="nav-tab" onclick="showScreen('leaderboard-screen')">Leaders</button>
+      <button class="nav-tab active">Live Feed</button>
+    </div>
+    <div class="nav-user"><div class="avatar">P</div></div>
+  </div>
+  <div class="scroll-wrap">
+  <div class="feed-body">
+    <div class="feed-header">
+      <h1>Global Language Preservation</h1>
+      <p>Real-time contributions from language guardians across Africa</p>
+    </div>
+    <div class="feed-container" id="feed-container">
+      <!-- Live feed items will appear here -->
+    </div>
+    <div class="feed-stats">
+      <div class="stat-box">
+        <div class="stat-num" id="live-words">0</div>
+        <div class="stat-label">Words contributed today</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num" id="live-contributors">0</div>
+        <div class="stat-label">Active contributors</div>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- Chart.js removed: not used in this vanilla MVP (and broke JS parsing) -->
+const COUNTRY_DATA = {
+  Nigeria: { sub: 'West Africa · Thriving', langs: 524, contribs: 4820, words: '87,400', audio: '21,300', languages: [['Yoruba', 'high'], ['Igbo', 'high'], ['Hausa', 'high'], ['Edo', 'mid'], ['Ibibio', 'mid'], ['Tiv', 'low']] },
+  Kenya: { sub: 'East Africa · Thriving', langs: 68, contribs: 3200, words: '54,800', audio: '14,200', languages: [['Swahili', 'high'], ['Kikuyu', 'high'], ['Luo', 'high'], ['Kamba', 'mid'], ['Meru', 'mid'], ['Turkana', 'low']] },
+  Tanzania: { sub: 'East Africa · Thriving', langs: 120, contribs: 1250, words: '32,000', audio: '9,500', languages: [['Sukuma', 'high'], ['Chagga', 'mid'], ['Makonde', 'mid'], ['Hehe', 'mid'], ['Nyamwezi', 'low'], ['Sandawe', 'low']] },
+  Ethiopia: { sub: 'Horn of Africa · Thriving', langs: 80, contribs: 2800, words: '48,000', audio: '12,800', languages: [['Amharic', 'high'], ['Oromo', 'high'], ['Tigrinya', 'high'], ['Afar', 'mid'], ['Somali', 'mid']] },
+  Ghana: { sub: 'West Africa · Thriving', langs: 79, contribs: 2100, words: '38,200', audio: '10,400', languages: [['Twi', 'high'], ['Ga', 'high'], ['Dagbani', 'mid'], ['Ewe', 'mid'], ['Fante', 'mid']] },
+  'South Africa': { sub: 'Southern Africa · Thriving', langs: 11, contribs: 3800, words: '62,000', audio: '18,500', languages: [['Zulu', 'high'], ['Xhosa', 'high'], ['Sotho', 'high'], ['Tswana', 'high'], ['Venda', 'mid']] },
+  'DR Congo': { sub: 'Central Africa · Thriving', langs: 242, contribs: 1800, words: '29,400', audio: '8,200', languages: [['Lingala', 'high'], ['Kikongo', 'high'], ['Swahili', 'high'], ['Tshiluba', 'mid']] },
+  Algeria: { sub: 'North Africa · Thriving', langs: 18, contribs: 1400, words: '24,000', audio: '7,000', languages: [['Arabic', 'high'], ['Tamazight', 'high'], ['Kabyle', 'mid']] },
+  Egypt: { sub: 'North Africa · Thriving', langs: 8, contribs: 2200, words: '40,000', audio: '11,000', languages: [['Arabic', 'high'], ['Coptic', 'mid'], ['Nubian', 'low']] },
+  Morocco: { sub: 'North Africa · Growing', langs: 7, contribs: 980, words: '18,400', audio: '5,200', languages: [['Arabic', 'high'], ['Tamazight', 'mid'], ['Tarifit', 'low']] },
+  Mali: { sub: 'West Africa · Growing', langs: 68, contribs: 620, words: '11,200', audio: '3,100', languages: [['Bambara', 'high'], ['Fulfulde', 'mid'], ['Songhai', 'mid'], ['Dogon', 'low']] },
+  Senegal: { sub: 'West Africa · Growing', langs: 39, contribs: 740, words: '13,500', audio: '4,200', languages: [['Wolof', 'high'], ['Pulaar', 'mid'], ['Serer', 'mid'], ['Jola', 'low']] },
+  Somalia: { sub: 'Horn of Africa · At risk', langs: 12, contribs: 210, words: '4,800', audio: '1,200', languages: [['Somali', 'high'], ['Maay', 'low'], ['Bravanese', 'low']] },
+  Madagascar: { sub: 'Indian Ocean · At risk', langs: 15, contribs: 180, words: '3,200', audio: '890', languages: [['Malagasy', 'mid'], ['Betsimisaraka', 'low'], ['Sakalava', 'low']] },
+  Mauritania: { sub: 'West Africa · At risk', langs: 8, contribs: 290, words: '5,400', audio: '1,500', languages: [['Hassaniya', 'mid'], ['Wolof', 'mid'], ['Soninke', 'low']] },
+  Niger: { sub: 'West Africa · At risk', langs: 21, contribs: 340, words: '6,200', audio: '1,800', languages: [['Hausa', 'high'], ['Zarma', 'mid'], ['Tuareg', 'low'], ['Kanuri', 'low']] },
+};
+
+const defaultCountry = 'Tanzania';
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) { el.classList.add('active'); el.scrollTop = 0; }
+  const wrap = el ? el.querySelector('.scroll-wrap') : null;
+  if (wrap) wrap.scrollTop = 0;
+}
+
+async function completeRegister() {
+  const full_name = document.getElementById('reg-name').value || '';
+  const country = document.getElementById('reg-country').value || '';
+
+  // MVP prototype uses chips; convert to arrays
+  const speaks = Array.from(document.querySelectorAll('#speaks-chips .lang-chip.selected')).map(el => el.dataset.lang);
+  const learning = Array.from(document.querySelectorAll('#learning-chips .lang-chip.selected')).map(el => el.dataset.lang);
+
+  // Need username derived from name; prompt-style for impression.
+  const username = (full_name || '').trim().toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+
+  const email = (document.querySelector('#register input[type="email"]')?.value || '').trim();
+  const password = (document.querySelector('#register input[type="password"]')?.value || '').trim();
+
+  const resp = await fetch('/api/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      full_name,
+      username: username || full_name,
+      email,
+      password,
+      country
+    })
+  });
+
+  if (!resp.ok) {
+    const text = await resp.text();
+    alert('Registration failed: ' + text);
+    return;
+  }
+
+  const data = await resp.json();
+  const user = data.user || {};
+
+  // Update UI session state
+  window.__auth_token = data.token;
+  document.getElementById('dash-username').textContent = user.full_name || user.username || full_name;
+  document.getElementById('nav-name-label').textContent = user.username || user.full_name || full_name;
+  const avatarEl = document.getElementById('nav-avatar');
+  if (avatarEl) avatarEl.textContent = (user.username || user.full_name || full_name)[0].toUpperCase();
+  document.getElementById('impact-name').textContent = user.full_name || user.username || full_name;
+
+  // Hide login panel if open
+  const lp = document.getElementById('login-panel');
+  if (lp) lp.style.display = 'none';
+
+  showScreen('dashboard');
+}
+
+function showLoginScreen() {
+  const lp = document.getElementById('login-panel');
+  if (lp) lp.style.display = lp.style.display === 'none' ? 'block' : 'block';
+}
+
+function showRegisterScreen() {
+  const lp = document.getElementById('login-panel');
+  if (lp) lp.style.display = 'none';
+}
+
+async function doLogin() {
+  const username = (document.getElementById('login-username')?.value || '').trim();
+  const password = (document.getElementById('login-password')?.value || '').trim();
+
+  const resp = await fetch('/api/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password })
+  });
+
+  if (!resp.ok) {
+    const text = await resp.text();
+    alert('Login failed: ' + text);
+    return;
+  }
+
+  const data = await resp.json();
+  window.__auth_token = data.token;
+  const user = data.user || {};
+
+  document.getElementById('dash-username').textContent = user.full_name || user.username || username;
+  document.getElementById('nav-name-label').textContent = user.username || user.full_name || username;
+  const avatarEl = document.getElementById('nav-avatar');
+  if (avatarEl) avatarEl.textContent = (user.username || user.full_name || username)[0].toUpperCase();
+  document.getElementById('impact-name').textContent = user.full_name || user.username || username;
+
+  showScreen('dashboard');
+}
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  const d = new Date();
+  const dd = document.getElementById('dash-date');
+  if (dd) dd.textContent = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'long' });
+  selectCountry(defaultCountry);
+  document.getElementById('teach-word').addEventListener('input', updatePreview);
+  document.getElementById('teach-meaning').addEventListener('input', updatePreview);
+  document.getElementById('teach-lang').addEventListener('change', updatePreview);
+});
+
+document.querySelectorAll('.lang-chip').forEach(chip => {
+  chip.addEventListener('click', () => chip.classList.toggle('selected'));
+});
+document.querySelectorAll('.interest-chip').forEach(chip => {
+  chip.addEventListener('click', () => chip.classList.toggle('selected'));
+});
+
+function updatePreview() {
+  const word = document.getElementById('teach-word').value || 'Ng\'wana';
+  const meaning = document.getElementById('teach-meaning').value || 'Child';
+  const lang = document.getElementById('teach-lang').value || 'Sukuma';
+  document.getElementById('preview-word').textContent = word;
+  document.getElementById('preview-meaning').textContent = meaning;
+  document.getElementById('preview-lang').textContent = lang + ' · Noun · Mwanza Region';
+}
+
+let recording = false;
+let recordTimer;
+function toggleRecord() {
+  const btn = document.getElementById('record-btn');
+  const dot = document.getElementById('record-dot');
+  const label = document.getElementById('record-label');
+  if (!recording) {
+    recording = true;
+    btn.classList.add('recording');
+    dot.classList.add('pulse');
+    label.textContent = 'Recording... (click to stop)';
+    recordTimer = setTimeout(() => { if (recording) toggleRecord(); }, 5000);
+  } else {
+    recording = false;
+    clearTimeout(recordTimer);
+    btn.classList.remove('recording');
+    dot.classList.remove('pulse');
+    label.textContent = 'Recording saved ✓';
+    btn.style.borderColor = '#1D9E75';
+    btn.style.color = '#1D9E75';
+  }
+}
+
+let wordCount = 15;
+function submitWord() {
+  const word = document.getElementById('teach-word').value || 'Ng\'wana';
+  const lang = document.getElementById('teach-lang').value || 'Sukuma';
+  wordCount++;
+  document.getElementById('impact-words').textContent = wordCount;
+  document.getElementById('prog-words').textContent = wordCount;
+  document.getElementById('toast-word').textContent = word;
+  document.getElementById('toast-lang').textContent = lang;
+  const toast = document.getElementById('contribute-toast');
+  toast.classList.add('show');
+  if (COUNTRY_DATA.Tanzania) COUNTRY_DATA.Tanzania.words = (parseInt(COUNTRY_DATA.Tanzania.words.replace(',','')) + 1).toLocaleString();
+  setTimeout(() => toast.classList.remove('show'), 5000);
+}
+
+function setFilter(btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function selectCountry(name) {
+  document.querySelectorAll('.country-path').forEach(p => p.classList.remove('selected'));
+  const el = document.querySelector('[data-country="' + name + '"]');
+  if (el) el.classList.add('selected');
+  const data = COUNTRY_DATA[name] || { sub: 'Africa', langs: 12, contribs: 400, words: '8,000', audio: '2,400', languages: [['Language A', 'mid'], ['Language B', 'low']] };
+  document.getElementById('cc-name').textContent = name;
+  document.getElementById('cc-sub').textContent = data.sub;
+  document.getElementById('cc-langs').textContent = data.langs;
+  document.getElementById('cc-contribs').textContent = data.contribs.toLocaleString();
+  document.getElementById('cc-words').textContent = data.words;
+  document.getElementById('cc-audio').textContent = data.audio;
+  const langList = document.getElementById('cc-lang-list');
+  langList.innerHTML = data.languages.map(([lang, health]) => {
+    const cls = health === 'high' ? 'health-high' : health === 'mid' ? 'health-mid' : 'health-low';
+    const label = health === 'high' ? 'Thriving' : health === 'mid' ? 'Growing' : 'At risk';
+    return '<div class="lang-row"><span class="lang-row-name">' + lang + '</span><span class="lang-health ' + cls + '">' + label + '</span></div>';
+  }).join('');
+}
+
+function swapLangs() {
+  const from = document.getElementById('trans-from');
+  const to = document.getElementById('trans-to');
+  const tmp = from.value;
+  from.value = to.value;
+  to.value = tmp;
+}
+
+function setExample(text, from, to) {
+  document.getElementById('trans-input').value = text;
+  const fromSel = document.getElementById('trans-from');
+  const toSel = document.getElementById('trans-to');
+  for (let o of fromSel.options) { if (o.value === from || o.text === from) fromSel.value = o.value; }
+  for (let o of toSel.options) { if (o.value === to || o.text === to) toSel.value = o.value; }
+  document.getElementById('trans-result').innerHTML = '<span style="color: var(--color-text-secondary); font-size: 14px;">Translation will appear here...</span>';
+}
+
+async function doTranslate() {
+  const input = document.getElementById('trans-input').value.trim();
+  if (!input) return;
+  const from = document.getElementById('trans-from').value;
+  const to = document.getElementById('trans-to').value;
+  const btn = document.getElementById('trans-btn');
+  const result = document.getElementById('trans-result');
+  btn.disabled = true;
+  result.innerHTML = '<div class="trans-loading"><div class="spinner"></div>Translating...</div>';
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{
+          role: 'user',
+          content: 'Translate the following text from ' + from + ' to ' + to + '. If the text is a proverb or culturally significant phrase, briefly note its cultural meaning after the translation (2 sentences max). Respond ONLY with the translation and optional cultural note. No preamble.\n\nText: ' + input
+        }]
+      })
+    });
+    const data = await resp.json();
+    const text = data.content && data.content[0] ? data.content[0].text : 'Translation unavailable.';
+    result.innerHTML = '<span style="font-size: 15px; line-height: 1.7;">' + text.replace(/\n/g, '<br>') + '</span>';
+  } catch(e) {
+    result.innerHTML = '<span style="color: var(--color-text-secondary);">Translation service unavailable. Please try again.</span>';
+  }
+  btn.disabled = false;
+}
+
+// Wire Teach AI -> Live Feed
+(function(){
+  const originalSubmitWord = submitWord;
+  window.submitWord = function(){
+    const word = document.getElementById('teach-word')?.value || "Ng'wana";
+    const lang = document.getElementById('teach-lang')?.value || "Sukuma";
+    const push = window.__pushUserContributionToLiveFeed;
+    if (typeof push === 'function') push({ word, lang });
+    return originalSubmitWord();
+  };
+})();
+</script>
+
+<!-- Live Feed (SSE-first + offline-first) -->
+<script>
+(() => {
+  const FEED_CONTAINER_ID = 'feed-container';
+  const LIVE_WORDS_ID = 'live-words';
+  const LIVE_CONTRIBUTORS_ID = 'live-contributors';
+  const STORAGE_KEY = 'linguaverse_livefeed_v1';
+
+  const COUNTRIES = [
+    'Nigeria','Kenya','Tanzania','Ethiopia','Ghana','South Africa','DR Congo','Algeria','Egypt','Morocco','Mali','Senegal','Somalia','Madagascar','Mauritania','Niger'
+  ];
+
+  const NAMES = ['Amina','Kofi','Chidi','Fatuma','Amara','Musa','Zola','Nia','Baraka','Khady','Samira','Mensah','Ayo','Tariro','Salim','Yaa','Bakari','Lindiwe','Temitope','Selam'];
+
+  function nowIso() { return new Date().toISOString(); }
+
+  function safeParse(json, fallback) {
+    try { return JSON.parse(json); } catch { return fallback; }
+  }
+
+  function loadFeed() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    const data = safeParse(raw, null);
+    if (data && Array.isArray(data.items)) return data;
+    return { items: [], counts: { words: 0, contributors: 0 } };
+  }
+
+  function saveFeed(state) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function fmtTime(ts) {
+    const d = new Date(ts);
+    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function randInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+  function createFeedItem(payload) {
+    const el = document.createElement('div');
+    el.className = 'feed-item';
+    el.innerHTML = `
+      <div class="feed-avatar">${payload.initials}</div>
+      <div class="feed-content">
+        <div class="feed-name">${payload.name}</div>
+        <div class="feed-action">${payload.action} <span class="feed-lang">${payload.lang}</span></div>
+        <div class="feed-time">${payload.time}</div>
+      </div>
+    `;
+    return el;
+  }
+
+  function computeInitials(name) {
+    const parts = (name || '').trim().split(/\s+/).filter(Boolean);
+    if (parts.length === 0) return 'U';
+    if (parts.length === 1) return (parts[0][0] || 'U').toUpperCase();
+    return ((parts[0][0] || 'U') + (parts[1][0] || '')).toUpperCase();
+  }
+
+  function refreshUI(state) {
+    const container = document.getElementById(FEED_CONTAINER_ID);
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    const items = state.items || [];
+    items
+      .slice(-30)
+      .reverse()
+      .forEach((it) => {
+        const el = createFeedItem(it);
+        container.appendChild(el);
+      });
+
+    const counts = state.counts || { words: 0, contributors: 0 };
+    document.getElementById(LIVE_WORDS_ID).textContent = (counts.words || 0).toLocaleString();
+    document.getElementById(LIVE_CONTRIBUTORS_ID).textContent = (counts.contributors || 0).toLocaleString();
+  }
+
+  function randomLanguageForCountry(country) {
+    // Use existing COUNTRY_DATA if available; else fallback to country.
+    if (typeof COUNTRY_DATA !== 'undefined' && COUNTRY_DATA[country] && COUNTRY_DATA[country].languages && COUNTRY_DATA[country].languages.length) {
+      return pick(COUNTRY_DATA[country].languages.map(([l]) => l));
+    }
+    return country + ' language';
+  }
+
+  function randomActionForLanguage(lang) {
+    const actions = ['taught AI a word','added a phrase','uploaded a pronunciation','contributed a proverb'];
+    const w = pick(actions);
+    return w;
+  }
+
+  function makeSimulatedItem() {
+    const country = pick(COUNTRIES);
+    const name = pick(NAMES);
+    const lang = randomLanguageForCountry(country);
+
+    const payload = {
+      id: Math.random().toString(16).slice(2),
+      name,
+      initials: computeInitials(name),
+      country,
+      lang,
+      action: randomActionForLanguage(lang),
+      time: fmtTime(nowIso())
+    };
+
+    // Word count contribution (demo)
+    payload.wordsAdded = randInt(1, 4);
+    payload.contribsAdded = payload.wordsAdded >= 3 ? 1 : 0;
+
+    // Keep iso timestamp for persistence but show formatted time
+    payload.timeIso = nowIso();
+    return payload;
+  }
+
+  function startSimulation() {
+    const state = loadFeed();
+
+    // seed if empty
+    if (!state.items || state.items.length === 0) {
+      for (let i = 0; i < 10; i++) {
+        state.items.push(makeSimulatedItem());
+      }
+      state.counts.words = randInt(400, 1200);
+      state.counts.contributors = randInt(12, 60);
+      saveFeed(state);
+    }
+
+    refreshUI(state);
+
+    // realtime feel: add 1 item every ~5-8 seconds
+    setInterval(() => {
+      const cur = loadFeed();
+      const item = makeSimulatedItem();
+      item.time = fmtTime(item.timeIso);
+
+      cur.items = cur.items || [];
+      cur.items.push(item);
+
+      // update demo counters
+      cur.counts = cur.counts || { words: 0, contributors: 0 };
+      cur.counts.words = (cur.counts.words || 0) + (item.wordsAdded || 1);
+      cur.counts.contributors = (cur.counts.contributors || 0) + (item.contribsAdded || 0);
+
+      // cap storage
+      if (cur.items.length > 120) cur.items = cur.items.slice(-120);
+
+      saveFeed(cur);
+      refreshUI(cur);
+    }, randInt(5000, 8000));
+  }
+
+  // Hook: when user contributes in Teach AI, push to live feed
+  function pushUserContributionToFeed({ word, lang }) {
+    const state = loadFeed();
+    state.items = state.items || [];
+
+    const name = document.getElementById('dash-username')?.textContent || 'You';
+    const initials = computeInitials(name);
+
+    const item = {
+      id: 'user_' + Date.now(),
+      name,
+      initials,
+      country: 'Local',
+      lang: lang || 'Language',
+      action: 'contributed a word: ' + (word || '—'),
+      timeIso: nowIso(),
+      time: fmtTime(nowIso()),
+      wordsAdded: 1,
+      contribsAdded: 1
+    };
+
+    state.items.push(item);
+    state.counts = state.counts || { words: 0, contributors: 0 };
+    state.counts.words = (state.counts.words || 0) + 1;
+    state.counts.contributors = (state.counts.contributors || 0) + 1;
+
+    if (state.items.length > 120) state.items = state.items.slice(-120);
+
+    saveFeed(state);
+    refreshUI(state);
+  }
+
+  // Expose hook globally for submitWord()
+  window.__pushUserContributionToLiveFeed = pushUserContributionToFeed;
+
+  // SSE-first: try live feed from backend. If it fails, fallback to simulation.
+  function wireSSE() {
+    try {
+      const es = new EventSource('/api/live-feed');
+
+      es.addEventListener('message', function() {
+        // not used (we emit custom SSE event fields as raw data)
+      });
+
+      es.onmessage = function() {
+        // no-op
+      };
+
+      // Some servers may deliver our JSON as the raw message.
+      es.onmessage = function(e) {
+        if (!e || !e.data) return;
+        handleIncomingMessage(e.data);
+      };
+
+      function handleIncomingMessage(raw) {
+        const state = loadFeed();
+        let msg;
+        try { msg = JSON.parse(raw.replace(/^data:\s*/,'').trim()); } catch { msg = null; }
+        if (!msg || !msg.event_type || !msg.payload) return;
+
+        if (msg.event_type === 'contribution.created') {
+          const p = msg.payload || {};
+          const name = p.user_name || 'Guardian';
+          const initials = computeInitials(name);
+          const lang = p.language || p.word || 'Language';
+
+          const item = {
+            id: 'sse_' + Date.now() + '_' + Math.random().toString(16).slice(2),
+            name,
+            initials,
+            country: p.country || 'Africa',
+            lang,
+            action: 'contributed a word: ' + (p.word || '—'),
+            timeIso: new Date().toISOString(),
+            time: (new Date()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            wordsAdded: 1,
+            contribsAdded: 1
+          };
+
+          state.items = state.items || [];
+          state.items.push(item);
+          state.counts = state.counts || { words: 0, contributors: 0 };
+          state.counts.words = (state.counts.words || 0) + 1;
+          state.counts.contributors = (state.counts.contributors || 0) + 1;
+
+          if (state.items.length > 120) state.items = state.items.slice(-120);
+          saveFeed(state);
+          refreshUI(state);
+        }
+      }
+
+      // If we don't receive anything for a while, simulation should kick in.
+      setTimeout(() => {
+        try {
+          if (document.hidden) return;
+          if ((window.__linguaverse_sse_received || 0) === 0) {
+            es.close();
+            startSimulation();
+          }
+        } catch {}
+      }, 3500);
+
+      es.onerror = function() {
+        try { es.close(); } catch {}
+        startSimulation();
+      };
+
+      // Mark received on any message
+      es.onmessage = function(e) {
+        window.__linguaverse_sse_received = (window.__linguaverse_sse_received || 0) + 1;
+        if (e && e.data) {
+          try {
+            const state = loadFeed();
+            const msg = JSON.parse(e.data);
+            if (msg && msg.event_type === 'contribution.created') {
+              // Let common handler run
+              // (we rely on handleIncomingMessage being in scope via closure)
+            }
+          } catch {}
+        }
+      };
+
+    } catch (e) {
+      startSimulation();
+    }
+  }
+
+  // Start SSE; if it fails, start simulation.
+  // We call startSimulation only if SSE can't connect or doesn't deliver events.
+  wireSSE();
+})();
+</script>
+</body>
+</html>
+

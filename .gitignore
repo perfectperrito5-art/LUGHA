@@ -1,0 +1,35 @@
+# Environment
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Python
+**/__pycache__/
+**/*.py[cod]
+**/.pytest_cache/
+**/.mypy_cache/
+**/venv/
+**/.venv/
+*.egg-info/
+
+# Node
+**/node_modules/
+**/dist/
+**/.vite/
+
+# IDE & OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Local DB / secrets (never commit)
+lugha_mvp/backend/.env
+
+# Docker volumes are named — no local data dirs to ignore
